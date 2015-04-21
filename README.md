@@ -1,18 +1,21 @@
 # Music_Informatic_Final
 
-    I have been trying to make the jumping algorithm in Infinite Playlist less random.To do this, I have made a few methods that can be called to switch the behavior of the jumps.     
-    I don't like how the branchLessTaken requires me to know how much each beat has been played, and I'm passing the count of each possible end branch in a list as a parameter. This seems like a very inefficient way to find how many times each beat has been played.    
-    The next method I am working on is LessRepeatBranch which has the average # of times a beat has been played. if the branch leads to a beat that has been played more than this, it does not take it, leaving only branches that lead to less played sections as viable jumps. I am going to run into the same problem here as I did with the last one. I need to figure out a way to obtain the number of times a specific beat was played in a better manner.
+I have been trying to make the jumping algorithm in Infinite Playlist less random.To do this, I have made a few methods that can be called to switch the behavior of the jumps.       
+I don't like how the branchLessTaken requires me to know how much each beat has been played, and I'm passing the count of each possible end branch in a list as a parameter. This seems like a very inefficient way to find how many times each beat has been played.      
+The next method I am working on is LessRepeatBranch which has the average # of times a beat has been played. if the branch leads to a beat that has been played more than this, it does not take it, leaving only branches that lead to less played sections as viable jumps. I am going to run into the same problem here as I did with the last one. I need to figure out a way to obtain the number of times a specific beat was played in a better manner.
 ```
-def class BranchChoice:
+def class BranchChoice(edges): #The pickle file contains a dictionary that holds all the edges 
+    self.edges = edges
+    def mapBeatsAndEdges(edgeMap):
+        for point in range(len(edgeMap)):
+            #check and see if the beats are in the list already.
+            #if not, add them to the list of beats
 
     def randomBranch(candidates, prob):
         if random() < prob:
             branch = choice(candidates)
             return branch
         return NULL
-
-    def findTimesPlayed(beat):
 
     def branchLessTaken(candidates, timesPlayed, prob):
         #I want to branch to the beat that has been played the least
