@@ -1,8 +1,14 @@
 # Music_Informatic_Final
 
-I have been trying to make the jumping algorithm in Infinite Playlist less random.To do this, I have made a few methods that can be called to switch the behavior of the jumps.       
-I don't like how the branchLessTaken requires me to know how much each beat has been played, and I'm passing the count of each possible end branch in a list as a parameter. This seems like a very inefficient way to find how many times each beat has been played.      
-The next method I am working on is LessRepeatBranch which has the average # of times a beat has been played. if the branch leads to a beat that has been played more than this, it does not take it, leaving only branches that lead to less played sections as viable jumps. I am going to run into the same problem here as I did with the last one. I need to figure out a way to obtain the number of times a specific beat was played in a better manner.
+##Problem     
+I have been trying to make the jumping algorithm in Infinite Playlist less random.To do this, I have made a few methods that can be called to switch the behavior of the jumps.     
+##Questions
+Since I have a list of all transitions, can I make this handle all aspects of branching?
+##Resources
+Luke Stack's Spotify Interface      
+Perry's Infinite playlist
+##Abstract
+The class so far takes the edges file in the pickle object. You can then call what branching method you want from the class and it will return a vector containing the edge's data, or a NULL vector if it has decided not to branch. I have three methods that will somewhat randomly take a branch. The first is the true random, which simply returns a possible branch for the beat chosen. The next method, branchLessTaken, picks the least played branch and takes it. The final method, lessRepeatBranch, takes as input a certain number to be used as a limit. If the number of times the end of the branch has been played is above the limit, then that branch will not be taken. To avoid picking the first branch that satisfies this condition, we place all possible transitions into a list and randomly choose one from the list. I would like to implement all branch related methods into this class. From figuring out if a branch is possible, deciding whether or not to branch, and which branch to take.
 ```
 def class BranchChoice(edges): #The pickle file contains a dictionary that holds all the edges 
     self.edges = edges
