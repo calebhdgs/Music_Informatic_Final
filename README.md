@@ -29,3 +29,12 @@ The next method, lessRepeatBranch, aims to fix the previous issue. It keeps trac
    
 The final method is not random, but is something I added on a whim. SmoothestBranch finds the transition with the end beat that has the shortest distance to the one currently being played. For Perry’s InfinitePlaylist, this would be the first possible transition since edges are sorted by their first element. However, I don’t want to rely on this, so I made my method search through all possible transitions to find the shortest distance. This method will always take the same branch, so there is no variety, but the transitions will be slightly smoother.
 
+##Results
+The results of the randomBranch method were inconclusive. There is no way to tell if there is a pattern to the algorithm’s choice.
+   
+The results of the branchLessTaken method were good. It would always take one of the least taken branches, but sometimes there was only one branch that was highly played, and it would still take it, since it was the only one.
+   
+The results of the lessRepeatBranch were hard to gauge. It does seem to be working since braches were both taken that had a beat count of less than average, and some transitions were avoided altogether. That being said, due to the nature of the method, it needs to be tested for extended periods of time. I ran it for close to ten minutes, with only 300 seconds of audio being played, but there were still some beats that had not been played. This was interesting since the entire playlist could have been played twice. However, It is possible that the branches just happened to not be taken. Therefore, I am only 80% sure this method works perfectly. Further hours of testing should be done, but I am fairly confident that it does work.
+   
+The results of the smoothestBranch were perfect. every transition takes the shortest branch available to it.
+
