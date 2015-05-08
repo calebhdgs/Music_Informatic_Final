@@ -1,68 +1,31 @@
 # Music_Informatic_Final
 
 ##Problem     
-I have been trying to make the jumping algorithm in Infinite Playlist less random.To do this, I have made a few methods that can be called to switch the behavior of the jumps.     
+The Infinite Jukebox has a few problems with it’s branching algorithm. It disproportionately plays heavily branched areas more than areas that have few branches. This is because some parts of songs are very similar and loop back in on themselves frequently, forming a sort of “cluster”. These clusters tend to repeat a sequence that sounds very similar, leading to much less variety than desired from a randomly branching algorithm. How can we make an algorithm that jumps randomly, while choosing to take certain transitions over others?
+      
 ##Questions
-Since I have a list of all transitions, can I make this handle all aspects of branching?
+How do we tell which beats have been played more than others?
+   
+Can I make it so that others could add their own Branching algorithm with little interference to my own code?
+   
+What should be the deciding factor when choosing NOT to take a branch?
+
 ##Resources
-Luke Stack's Spotify Interface      
 Perry's Infinite playlist
+   
+Luke Stack's Spotify Interface and contributions to Perry’s InfinitePlaylist
+
 ##Abstract
-The class so far takes the edges file in the pickle object. You can then call what branching method you want from the class and it will return a vector containing the edge's data, or a NULL vector if it has decided not to branch. I have three methods that will somewhat randomly take a branch. The first is the true random, which simply returns a possible branch for the beat chosen. The next method, branchLessTaken, picks the least played branch and takes it. The final method, lessRepeatBranch, takes as input a certain number to be used as a limit. If the number of times the end of the branch has been played is above the limit, then that branch will not be taken. To avoid picking the first branch that satisfies this condition, we place all possible transitions into a list and randomly choose one from the list. I would like to implement all branch related methods into this class. From figuring out if a branch is possible, deciding whether or not to branch, and which branch to take.
-```
-def class BranchChoice(edges): #The pickle file contains a dictionary that holds all the edges 
-    self.edges = edges
-    def mapBeatsAndEdges(edgeMap):
-        for point in range(len(edgeMap)):
-            #check and see if the beats are in the list already.
-            #if not, add them to the list of beats
+I decided to make my program a class that can be created by the coder and then used to call whatever branching method they want. This allows the coder to create and call their own method without modifying existing code.  The class itself takes the edges file in the pickle object as a parameter. I added four methods that affect the behavior of the branching algorithm in a specific way. 
 
-    def randomBranch(candidates, prob):
-        if random() < prob:
-            branch = choice(candidates)
-            return branch
-        return NULL
+##Methods
+All branching methods take a key that identifies the currently playing song and the current beat number. All methods return an edge vector that contains the distance from the current beat to the beat that will be transitioned to, the key that identifies the new song that will be playing, and the beat of the song that will be playing.
+   
+The first method is randomBranch. This method is the vanilla branch that works the same as the currently implemented random branch algorithm. It simply identifies possible branches for the current beat and chooses one at random.
+   
+The next method is branchLessTaken. This method identifies all possible branches from the current beat and creates a list of possible transitions whose ending beat has been played the fewest times. For this method, I had to implement a way to keep track of how many times each beat had been played. I settled for knowing only how many times the beats I was transitioning to or from were played. This is not entirely accurate as I am transitioning to the beat after the beat I am looking at, but theoretically, the same principle holds. If it is a high traffic area, the beat I am looking at will be played more than others, and so should cancel out my inaccuracy. The benefits of using this method is that there is more variety when the track is playing. The drawbacks of using this method is that if there is only one possible branch, It will take the branch, since it is the least played of the possible transition. So this method does not work well for clusters of beats with single possible transitions. Conversely, this method works very well for beats that have a large number of possible transitions.
+   
+The next method, lessRepeatBranch, aims to fix the previous issue. It keeps track of the number of times an average beat will have been played. If the number of times the end of the branch has been played is above the average, then that branch will not be taken. To avoid picking the first branch that satisfies this condition, we place all possible transitions into a list and randomly choose one from the list. The benefits of using this method is that it will always break out of clusters when possible, or simply play its way out without taking any transitions. The drawbacks is that there may be fairly long sections where no transition is found that is acceptable, so no branches will be taken. This method works well with heavily mapped areas, since it will lead to areas that haven’t been played recently, but does not work well with songs that are not mapped heavily, since very few branches will be taken.
+   
+The final method is not random, but is something I added on a whim. SmoothestBranch finds the transition with the end beat that has the shortest distance to the one currently being played. For Perry’s InfinitePlaylist, this would be the first possible transition since edges are sorted by their first element. However, I don’t want to rely on this, so I made my method search through all possible transitions to find the shortest distance. This method will always take the same branch, so there is no variety, but the transitions will be slightly smoother.
 
-    def branchLessTaken(candidates, timesPlayed, prob):
-        #I want to branch to the beat that has been played the least
-        #To do this, I need to know how many times each end beat has been played
-
-        #make sure you are actually branching
-        if random() < prob:
-            #the number of times each beat has been played is stored in timesPlayed
-            lowest = timesPlayed[0]
-            lowestIndex = 0
-            i=0
-            #Find the brach that goes to the least played beat
-            while i < len(timesPlayed):
-                if timesPlayed[i] < lowest:
-                    lowest = timesPlayed[i]
-                    lowestIndex = i
-                i++
-            #return the branch to least played beat
-            return candidates[lowestIndex]
-        #If we don't branch, return null
-        return NULL
-
-    def lessRepeatBranch(candidates, timesPlayed, averagePlayed, prob):
-        #If branches lead to high traffic areas,
-        #don't take the branches
-        if random() < prob:
-            lowestIndex = -1
-            lowest = averagePlayed
-            i=0
-            #find a branch that goes to a low traffic zone.
-            while i < len(timesPlayed):
-                if timesPlayed[i] < averaePlayed:
-                    lowestIndex = i
-                    lowest = timesPlayed[i]
-                i++
-            #If no branch is found that is lower than average, we return null
-            if lowestIndex == -1:
-                return NULL
-            else:
-                return candidates[i]
-        #If we decide not to branch, return null
-        return NULL
-
-```
